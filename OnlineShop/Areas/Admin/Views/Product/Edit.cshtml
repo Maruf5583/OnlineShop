@@ -1,0 +1,76 @@
+@model OnlineShop.Models.Products
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <h3 class="text-danger"> @ViewBag.message</h3>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Price" class="form-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ProductColor" class="form-label"></label>
+                <input asp-for="ProductColor" class="form-control" />
+                <span asp-validation-for="ProductColor" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="IsAvaliable" class="form-label"></label>
+                <input asp-for="IsAvaliable" class="form-check-input ms-2" />
+                <span asp-validation-for="IsAvaliable" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ProductTypeId" class="form-label"></label>
+                <select asp-for="ProductTypeId" class="form-select" asp-items="@(ViewData["ProductTypes"] as SelectList)"></select>
+                <span asp-validation-for="ProductTypeId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SpecialTagId" class="form-label"></label>
+                <select asp-for="SpecialTagId" class="form-select" asp-items="@(ViewData["SpecialTags"] as SelectList)"></select>
+                <span asp-validation-for="SpecialTagId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                @if (!string.IsNullOrEmpty(Model?.Image))
+                {
+                    <div class="mb-2">
+                        <img src="~/images/products/@Model.Image" alt="Product image" class="img-thumbnail" style="max-width:180px" />
+                    </div>
+                }
+                <label class="form-label">Change Image</label>
+                <input type="file" name="imageFile" class="form-control form-control-sm" />
+            </div>
+
+            <div class="mb-3">
+                <input type="submit" value="Update" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

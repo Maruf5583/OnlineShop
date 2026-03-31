@@ -1,0 +1,65 @@
+﻿@using OnlineShop.Models
+@model IEnumerable<SpecialTag>
+@{
+    ViewData["Title"] = "Special Tag";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        @if (TempData["success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h4 class="mb-0 text-primary"> Special Tag List <small class="text-muted">(@Model?.Count())</small></h4>
+            <div class="d-flex gap-2">
+                <input id="searchBox" type="search" class="form-control form-control-sm" placeholder="Search product types..." style="min-width: 220px;" />
+                <a asp-action="Create" class="btn btn-sm btn-success">New Tag</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table id="productTypesTable" class="table table-hover table-striped align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Product Type</th>
+                        <th class="text-end" style="width:220px">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.TagName</td>
+                            <td class="text-end">
+                                <partial name="_ButtonPartial" model="@item.Id" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function(){
+            const box = document.getElementById('searchBox');
+            const table = document.getElementById('productTypesTable');
+            if(!box || !table) return;
+            box.addEventListener('input', function () {
+                const q = this.value.trim().toLowerCase();
+                const rows = table.tBodies[0].rows;
+                for (let i = 0; i < rows.length; i++) {
+                    const cell = rows[i].cells[0];
+                    const txt = (cell && cell.textContent) ? cell.textContent.trim().toLowerCase() : '';
+                    rows[i].style.display = txt.indexOf(q) === -1 ? 'none' : '';
+                }
+            });
+        })();
+    </script>
+}
