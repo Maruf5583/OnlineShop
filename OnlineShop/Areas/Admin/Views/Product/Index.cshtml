@@ -21,7 +21,7 @@
                 <a asp-action="Create" class="btn btn-sm btn-success"> + Add New Product</a>
             </div>
         </div>
-        <form method="post" class="row g-2 mb-4 gap-3">
+        <form method="post" class="row g-2 mb-2 gap-3">
             <div class="col-3 " >
                 <input type="number" class="form-control"
                        name="LowAmount" placeholder="Min Price" />
@@ -39,16 +39,19 @@
             </div>
         </form>
 
+        <div id="exportButtonsContainer" class="mb-3 d-flex align-items-center gap-2">
+            <!-- DataTable buttons এখানে আসবে -->
+        </div>
 
        
 
         <div class="table-responsive">
-            <table id="productsTable" class="table table-hover table-striped align-middle">
+            <table id="myTable" class="table table-hover table-striped align-middle">
                 <thead class="table-light">
                     <tr>
                         <th>Name</th>
                         <th>Price</th>
-                        <th>Image</th>
+                         <th>Image</th> 
                         <th>Type</th>
                         <th>Tag</th>
                         <th>Abalabile</th>
@@ -61,12 +64,12 @@
                     <tr>
                             <td>@item.Name</td>
                             <td>@item.Price.ToString("C")</td>
-                            <td>
+                             <td>
                                 @if (!string.IsNullOrEmpty(item?.Image))
                                 {
                                     <img src="~/images/products/@item.Image" alt="thumb" class="img-thumbnail" style="max-width:80px" />
                                 }
-                            </td>
+                            </td> 
                             <td>@item.ProductTypes?.ProductType</td>
                             <td>@item.SpecialTag?.TagName</td>
                             <td>@item.IsAvaliable</td>
@@ -80,4 +83,44 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
 
+            // Default button class সেট করে দিলাম যাতে আমাদের className কাজ করে
+            $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn btn-sm';
+
+            var table = $('#myTable').DataTable({
+                paging: true,
+                searching: true,
+                info: true,
+                lengthChange: true,
+                pageLength: 10,
+                responsive: true,
+                dom: "lrtip",
+
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel"></i> Export Excel',
+                        className: 'btn btn-primary me-2'          // ← Primary color
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf"></i> Export PDF',
+                        className: 'btn btn-danger'                 // PDF-এর জন্য Danger (লাল)
+                    }
+                ],
+
+                columnDefs: [
+                    { orderable: false, targets: [6] }   // Actions column
+                ]
+            });
+
+            // Buttons কে custom container-এ নিয়ে যাওয়া
+            var buttonsContainer = table.buttons().container();
+            buttonsContainer.addClass('btn-group');
+            $('#exportButtonsContainer').append(buttonsContainer);
+        });
+    </script>
+}
