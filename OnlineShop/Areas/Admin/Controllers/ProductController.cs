@@ -118,7 +118,18 @@ namespace OnlineShop.Areas.Admin.Controllers
                 var entity = await _db.Products.FindAsync(product.Id);
                 if (entity == null) return NotFound();
 
-                // if new image uploaded, delete old and save new
+             
+                var searchProduct = _db.Products.FirstOrDefault(c =>
+                    c.Name == product.Name && c.Id != product.Id);
+
+                if (searchProduct != null)
+                {
+                    ViewBag.message = "This product already exists.";
+                    PopulateSelectLists();
+                    return View(product);
+                }
+
+               
                 if (imageFile != null && imageFile.Length > 0)
                 {
                     // delete old
@@ -147,21 +158,6 @@ namespace OnlineShop.Areas.Admin.Controllers
                 entity.ProductTypeId = product.ProductTypeId;
                 entity.SpecialTagId = product.SpecialTagId;
 
-
-
-                var searchProduct = _db.Products.FirstOrDefault(c => c.Name == product.Name);
-
-                if (searchProduct != null)
-                {
-
-                    ViewBag.message = "This product already exists.";
-
-                    PopulateSelectLists();
-
-                    return View(product);
-
-                }
-
                 _db.Update(entity);
                 await _db.SaveChangesAsync();
                 TempData["success"] = "Product updated successfully.";
@@ -171,7 +167,6 @@ namespace OnlineShop.Areas.Admin.Controllers
             PopulateSelectLists();
             return View(product);
         }
-
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();

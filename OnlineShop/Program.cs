@@ -3,7 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // কতক্ষণ সেশন থাকবে
+    //options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("db-connection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -32,6 +37,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
