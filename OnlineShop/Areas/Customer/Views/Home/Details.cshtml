@@ -1,0 +1,67 @@
+﻿@model OnlineShop.Models.Products
+
+
+<h1>Details</h1>
+
+
+
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            @{ 
+                var file = Model?.Image ?? "noimage.png";
+                var fileName = System.IO.Path.GetFileName(file);
+                var imgSrc = fileName?.ToLower() == "noimage.png" ? Url.Content("~/images/noimage.png") : Url.Content($"~/images/products/{fileName}");
+            }
+            <img src="@imgSrc" class="card-img-top" alt="@Model.Name" style="object-fit:cover; height:420px;" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h2 class="card-title">@Model.Name</h2>
+            <p class="text-muted">@Model.ProductTypes?.ProductType &nbsp; • &nbsp; @Model.SpecialTag?.TagName</p>
+            <h3 class="text-primary">@Model.Price.ToString("C")</h3>
+
+            <p><strong>Color:</strong> @Model.ProductColor</p>
+            <p><strong>Availability:</strong> @(Model.IsAvaliable ? "In Stock" : "Out of Stock")</p>
+
+            @using OnlineShop.Utility
+            @{
+                var cart = Context.Session.Get<List<OnlineShop.Models.Products>>("products");
+                var inCart = cart != null && cart.Exists(p => p.Id == Model.Id);
+            }
+
+            @if (!inCart)
+            {
+                <form asp-area="Customer" asp-controller="Home" asp-action="AddToCart" method="post" class="row g-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="col-auto">
+                        <label class="form-label">Quantity</label>
+                        <input type="number" name="quantity" value="1" min="1" class="form-control" style="width:100px" />
+                    </div>
+                    <div class="col-auto align-self-end">
+                        <button type="submit" class="btn btn-success">Add to cart</button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <form asp-area="Customer" asp-controller="Home" asp-action="Remove" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn btn-danger">Remove from cart</button>
+                </form>
+            }
+
+            <div class="mt-3">
+                <a asp-action="Index" class="btn btn-link">Back to products</a>
+            </div>
+        </div>
+    </div>
+</div>
