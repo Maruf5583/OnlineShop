@@ -1,0 +1,157 @@
+﻿
+@using OnlineShop.Utility
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@model OnlineShop.Models.Order
+@{
+    ViewData["Title"] = "Order Details";
+}
+@{
+
+    List<Products> products = HttpContextAccessor.HttpContext.Session.Get<List<Products>>("products");
+   
+    if (products == null)
+    {
+        products=new List<Products>();
+    }
+
+}
+<br />
+
+<h2 class="text-info">Order Details</h2>
+<form asp-action="Checkout" method="post" enctype="multipart/form-data">
+    <div class="p-4 rounded border row">
+        <div asp-validation-summary="ModelOnly" class="text-danger">
+
+        </div>
+        <div class="col-6">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Name"></label>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Id" />
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="PhoneNo"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="PhoneNo" class="form-control" />
+                    <span asp-validation-for="PhoneNo" class="text-danger"></span>
+                </div>
+               
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Address"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Email"></label>
+                </div>
+                <div class="col-8">
+                    @*<select asp-for="ProductTypeId" asp-items="ViewBag.productTypeId" class="form-control"></select>*@
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+               
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="OrderDate"></label>
+                </div>
+            <div class="col-8">
+                    @* store real value for model binding *@
+                    <input asp-for="OrderDate" type="hidden" />
+                    @* display formatted date to user; if model has no date, show today's date *@
+                    <input id="OrderDateDisplay" value="@((Model?.OrderDate == default(System.DateTime)) ? System.DateTime.Now.ToString("dd/MM/yyyy") : Model.OrderDate.ToString("dd/MM/yyyy"))" type="text" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="OrderDate" class="text-danger"></span>
+                </div>
+                
+            </div>
+
+        </div>
+
+        <div class="col-6">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in products)
+                {
+                    <tr>
+                        <td>
+                            <img src="@Url.Content($"~/images/products/{item.Image}")" height="100" width="150" alt="@item.Name" />
+                        </td>
+                        <td>@item.Name</td>
+                        <td>@item.Price</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <div class="text-right">
+                <h3>Total Price : @products.Sum(c=>c.Price)</h3>
+            </div>
+            <div class="form-group text-right">
+                <input type="submit" value="Place Order" class="btn btn-success"/>
+            </div>
+        </div>
+       
+
+    </div>
+</form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // initialize datepicker on display field and update hidden field for model binding
+        $(function() {
+            var $display = $("#OrderDateDisplay");
+            var $hidden = $("#OrderDate");
+            $display.datepicker({
+                showAnim: "slide",
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: 'dd/mm/yy',
+                onSelect: function(dateText) {
+                    // parse selected date and set ISO string in hidden input (yyyy-MM-dd)
+                    var parts = dateText.split('/');
+                    if (parts.length === 3) {
+                        var iso = parts[2] + '-' + parts[1] + '-' + parts[0];
+                        $hidden.val(iso);
+                    }
+                }
+            });
+
+            // if display has a value on load, set the hidden input accordingly for model binding
+            var txt = $display.val();
+            if (txt) {
+                var p = txt.split('/');
+                if (p.length === 3) {
+                    $hidden.val(p[2] + '-' + p[1] + '-' + p[0]);
+                }
+            }
+        });
+    </script>
+  
+}
+
+
+
