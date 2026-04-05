@@ -1,5 +1,10 @@
-﻿@using OnlineShop.Utility
+﻿@using Microsoft.AspNetCore.Identity
+@using OnlineShop.Utility
 @using OnlineShop.Models
+
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 <!DOCTYPE html>
 <html lang="en">
     <head>

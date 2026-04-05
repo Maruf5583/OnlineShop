@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Data;
 using OnlineShop.Models;
 
@@ -22,7 +23,7 @@ namespace OnlineShop.Areas.Admin.Controllers
             return View(_db.ProductTypes.ToList());
         }
 
-
+        [Authorize]
         public IActionResult Create()
         {
             return View();

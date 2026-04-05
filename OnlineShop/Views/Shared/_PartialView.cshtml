@@ -1,0 +1,10 @@
+﻿@model string
+<div class="btn-group">
+        <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model">
+           Edit
+        </a>
+        <a asp-action="Details" class="btn btn-success" asp-route-id="@Model">Details</i></a>
+        <a asp-action="Locout" class="btn btn-danger" asp-route-id="@Model">
+           Delete
+        </a>
+    </div>
