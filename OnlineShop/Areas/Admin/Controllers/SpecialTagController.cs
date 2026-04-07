@@ -6,7 +6,7 @@ using OnlineShop.Models;
 namespace OnlineShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = "super user")]
     public class SpecialTagController : Controller
     {
         private ApplicationDbContext _db;

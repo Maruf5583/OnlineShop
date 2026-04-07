@@ -5,10 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineShop.Data;
 using OnlineShop.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "super user")]
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _db;

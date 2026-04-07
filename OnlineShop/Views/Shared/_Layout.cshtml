@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using OnlineShop.Utility
 @using OnlineShop.Models
+@inject IHttpContextAccessor HttpContextAccessor
+
 
 
 @inject SignInManager<ApplicationUser> SignInManager
@@ -29,21 +31,34 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 @{
+                     
+                    var userRole = HttpContextAccessor.HttpContext.Session.GetString("RoleName");
+
                     var cart = Context.Session.Get<List<Products>>("products");
                     var cartCount = cart?.Count ?? 0;
                 }
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="ProductTypes" asp-action="Index">Productypes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="SpecialTag" asp-action="Index">SpecialTag</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
-                        </li>
+                        @if (userRole == "super user")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="ProductTypes" asp-action="Index">Productypes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="SpecialTag" asp-action="Index">SpecialTag</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Role" asp-action="Index">Role</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Customer" asp-controller="User" asp-action="Index">Users</a>
+                            </li>
+                           
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="Cart">🛒 Cart <span class="badge bg-secondary">@cartCount</span></a>
                         </li>
