@@ -27,6 +27,7 @@ namespace OnlineShop.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
+            HttpContext.Session.SetString("RoleName",  "");
             _logger.LogInformation("User logged out.");
             if (returnUrl != null)
             {
